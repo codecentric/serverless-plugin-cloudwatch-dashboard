@@ -1,12 +1,32 @@
 {
   "name": "serverless-plugin-cloudwatch-dashboard",
   "version": "1.0.0-SNAPSHOT",
-  "description": "Generate dashboard for your lambdas.",
+  "description": "Generate cloudwatch dashboards for your lambdas.",
   "main": "src/DashboardPlugin.js",
-  "author": "Mahdi Ebrahimi",
   "license": "MIT",
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "fs-extra": "^7.0.1"
+  "author": "Mahdi Ebrahimi",
+  "scripts": {
+    "lint": "standard src/**",
+    "lint:fix": "standard --fix src/**"
+  },
+  "keywords": [
+    "serverless plugin",
+    "serverless dashboard",
+    "serverless cloudwatch",
+    "serverless cloudwatch dashboard",
+    "serverless plugin cloudwatch dashboard",
+    "lambda serverless",
+    "lambda dashboard"
+  ],
+  "homepage": "https://github.com/codecentric/serverless-plugin-cloudwatch-dashboard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codecentric/serverless-plugin-cloudwatch-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codecentric/serverless-plugin-cloudwatch-dashboard/issues"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
   }
 }
