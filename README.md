@@ -46,8 +46,8 @@ dashboard:
 The default configuration will look like this:
 ```yaml
 dashboard:
-  metrics: ['Duration', 'Errors', 'Invocations', 'Throttles']
-  stats: ['p99', 'p95', 'p90', 'p50']
+  metrics: [Duration, Errors, Invocations, Throttles]
+  stats: [p99, p95, p90, p50]
   enabled: true
 ```
 
