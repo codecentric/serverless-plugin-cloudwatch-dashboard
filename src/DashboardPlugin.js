@@ -22,18 +22,25 @@ class DashboardPlugin {
 
   addDashboards (service, logger) {
     const config = DashboardPlugin.getConfig(service)
-    const functions = DashboardPlugin.getFunctionNames(service)
     const stats = config.stats
     const metrics = config.metrics
+    const enabled = config.enabled
+
+    const functions = DashboardPlugin.getFunctionNames(service, enabled)
 
     if (DashboardPlugin.notEmpty(functions, stats, metrics)) {
-      logger('Adding dashboards:')
+      logger('Adding function:')
+      functions.forEach(f => logger('- ' + f))
+
+      logger('... to dashboards:')
       const dashboards = this.createDashboards(service.provider.region, functions, metrics, stats)
       const dashboardResources = dashboards.reduce(function (acc, next) {
         logger('- ' + next.Properties.DashboardName)
         acc[next.Properties.DashboardName] = next
         return acc
       }, {})
+
+      logger(`Summary: added ${functions.length} functions to ${dashboards.length} dashboards.`)
 
       const template = service.provider.compiledCloudFormationTemplate
       template.Resources = Object.assign(dashboardResources, template.Resources)
@@ -58,13 +65,16 @@ class DashboardPlugin {
     return Object.assign(defaultConfig, config)
   }
 
-  static getFunctionNames (service) {
+  static getFunctionNames (service, pluginEnabled) {
     const functions = service.functions
 
     return Object.keys(functions).map(name => {
-      const config = functions[name].dashboard
-      if (config === false || config === 'false') return undefined
-      else return name
+      const functionEnabled = functions[name].dashboard
+
+      if (pluginEnabled && functionEnabled !== false) return name
+      else if (functionEnabled) return name
+      else return undefined
+
     }).filter(v => typeof v !== 'undefined')
   }
 
