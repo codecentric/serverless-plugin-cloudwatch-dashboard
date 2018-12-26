@@ -29,18 +29,22 @@ class DashboardPlugin {
     const functions = DashboardPlugin.getFunctionNames(service, enabled)
 
     if (DashboardPlugin.notEmpty(functions, stats, metrics)) {
-      logger('Adding function:')
+      logger('Adding stats:')
+      stats.forEach(s => logger('- ' + s))
+
+      logger('... of functions:')
       functions.forEach(f => logger('- ' + f))
 
       logger('... to dashboards:')
+      metrics.forEach(m => logger('- ' + m))
+
       const dashboards = this.createDashboards(service.provider.region, functions, metrics, stats)
       const dashboardResources = dashboards.reduce(function (acc, next) {
-        logger('- ' + next.Properties.DashboardName)
         acc[next.Properties.DashboardName] = next
         return acc
       }, {})
 
-      logger(`Summary: added ${functions.length} functions to ${dashboards.length} dashboards.`)
+      logger(`Summary: added ${stats.length} statistics of ${functions.length} functions to ${dashboards.length} dashboards.`)
 
       const template = service.provider.compiledCloudFormationTemplate
       template.Resources = Object.assign(dashboardResources, template.Resources)
