@@ -74,8 +74,8 @@ class DashboardPlugin {
 
     return Object.keys(functions).map(name => {
       const functionEnabled = functions[name].dashboard
-      if (pluginEnabled && functionEnabled !== false) return name
-      else if (functionEnabled) return name
+      if (pluginEnabled && functionEnabled !== false) return functions[name].name
+      else if (functionEnabled) return functions[name].name
       else return undefined
     }).filter(v => typeof v !== 'undefined')
   }
