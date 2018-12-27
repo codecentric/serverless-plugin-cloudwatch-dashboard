@@ -14,40 +14,42 @@ class DashboardPlugin {
    * @param {!Object} options - Serverless options
    * */
   constructor (serverless, options) {
-    const logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
+    this.service = serverless.service
+    this.logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
     this.hooks = {
-      'before:package:finalize': () => this.addDashboards(serverless.service, logger)
+      'before:package:finalize': () => this.addDashboards()
     }
   }
 
-  addDashboards (service, logger) {
-    const config = DashboardPlugin.getConfig(service)
+  addDashboards () {
+    const config = this.getConfig()
     const stats = config.stats
     const metrics = config.metrics
     const enabled = config.enabled
 
-    const functions = DashboardPlugin.getFunctionNames(service, enabled)
+    const functions = this.getFunctionNames(enabled)
 
     if (DashboardPlugin.notEmpty(functions, stats, metrics)) {
-      logger('Adding stats:')
-      stats.forEach(s => logger('- ' + s))
+      this.logger('Adding stats:')
+      stats.forEach(s => this.logger('- ' + s))
 
-      logger('... of functions:')
-      functions.forEach(f => logger('- ' + f))
+      this.logger('... of functions:')
+      functions.forEach(f => this.logger('- ' + f))
 
-      logger('... to dashboards:')
-      metrics.forEach(m => logger('- ' + m))
+      this.logger('... to dashboards:')
+      metrics.forEach(m => this.logger('- ' + m))
 
-      const dashboards = this.createDashboards(service.provider.region, functions, metrics, stats)
+      const dashboards = this.createDashboards(this.service.provider.region, functions, metrics, stats)
       const dashboardResources = dashboards.reduce(function (acc, next) {
         acc[next.Properties.DashboardName] = next
         return acc
       }, {})
 
-      logger(`Summary: added ${stats.length} statistics of ${functions.length} functions to ${dashboards.length} dashboards.`)
+      this.logger(`Summary: added ${stats.length} statistics of ${functions.length} functions to ${dashboards.length} dashboards.`)
 
-      const template = service.provider.compiledCloudFormationTemplate
+      const template = this.service.provider.compiledCloudFormationTemplate
       template.Resources = Object.assign(dashboardResources, template.Resources)
+      this.service.provider.compiledCloudFormationTemplate = template
     }
   }
 
@@ -57,20 +59,21 @@ class DashboardPlugin {
     return metrics.map(metric => dashboardFactory.create(region, metric, stats, functions))
   }
 
-  static getConfig (service) {
-    const custom = service.custom || {}
+  getConfig () {
+    const custom = this.service.custom || {}
     const config = custom.dashboard || {}
 
     const defaultConfig = {
       metrics: ['Duration', 'Errors', 'Invocations', 'Throttles'],
-      stats: ['p99', 'p95', 'p90', 'p50']
+      stats: ['p99', 'p95', 'p90', 'p50'],
+      enabled: true
     }
 
     return Object.assign(defaultConfig, config)
   }
 
-  static getFunctionNames (service, pluginEnabled) {
-    const functions = service.functions
+  getFunctionNames (pluginEnabled) {
+    const functions = this.service.functions || []
 
     return Object.keys(functions).map(name => {
       const functionEnabled = functions[name].dashboard

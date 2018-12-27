@@ -6,8 +6,9 @@
   "license": "MIT",
   "author": "Mahdi Ebrahimi",
   "scripts": {
-    "lint": "standard src/**",
-    "lint:fix": "standard --fix src/**"
+    "test": "nyc --all ava",
+    "lint": "standard src/** __tests__/**",
+    "lint:fix": "standard --fix src/** __tests__/**"
   },
   "keywords": [
     "serverless plugin",
@@ -27,6 +28,9 @@
     "url": "https://github.com/codecentric/serverless-plugin-cloudwatch-dashboard/issues"
   },
   "devDependencies": {
+    "ava": "^1.0.1",
+    "nyc": "^13.1.0",
+    "sinon": "^7.2.2",
     "standard": "^12.0.1"
   }
 }
