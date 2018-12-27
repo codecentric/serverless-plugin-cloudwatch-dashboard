@@ -7,7 +7,7 @@ module.exports = class Dashboard {
 
     const dashboardName = `${metric}Dashboard`
     const widgets = stats.map(stat => widgetFactory.perFunction(region, metric, stat, functions))
-    widgets.unshift(widgetFactory.acrossAll(region, metric, stats))
+    widgets.unshift(widgetFactory.acrossAll(region, metric))
     return Dashboard.dashboard(dashboardName, widgets)
   }
 

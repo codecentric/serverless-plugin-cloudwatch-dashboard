@@ -1,8 +1,9 @@
 'use strict'
 
 module.exports = class Widget {
-  acrossAll (region, metric, stats) {
+  acrossAll (region, metric) {
     const name = `Lambda ${metric} Across All`
+    const stats = ['Maximum', 'Average', 'Minimum'] // only these stats seem to have values for across all metrics
 
     const metrics = stats
       .map(stat => [ 'AWS/Lambda', metric, { 'stat': stat } ])
