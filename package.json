@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-cloudwatch-dashboard",
-  "version": "1.0.2-SNAPSHOT",
+  "version": "1.0.3-SNAPSHOT",
   "description": "Generate cloudwatch dashboards for your lambdas.",
   "main": "src/DashboardPlugin.js",
   "license": "MIT",
