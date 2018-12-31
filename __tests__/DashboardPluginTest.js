@@ -49,7 +49,6 @@ test('creates new resources for dashboards, when missing', t => {
   })
 })
 
-
 test('add dashboards to existing resources', t => {
   const serverless = {
     service: {
@@ -76,3 +75,40 @@ test('add dashboards to existing resources', t => {
   })
 })
 
+test('create lambda dashboards', t => {
+  const serverless = {
+    cli: {
+      log: msg => {}
+    },
+    service: {
+      custom: {
+        dashboard: {
+          lambda: {
+            metrics: ['Duration'],
+            stats: ['p99'],
+            enabled: true
+          }
+        }
+      },
+      functions: {
+        's-dev-f1': {},
+        's-dev-f2': {}
+      },
+      provider: {
+        region: 'eu-central-1',
+        compiledCloudFormationTemplate: {
+          Resources: {
+            otherResource: 'dont touch me'
+          }
+        }
+      }
+    }
+  }
+
+  const dashboardPlugin = new DashboardPlugin(serverless, {})
+  const dashboards = dashboardPlugin.createLambdaDashboards()
+
+  t.is(dashboards.length, 1)
+  t.is(dashboards[0].Type, 'AWS::CloudWatch::Dashboard')
+  t.deepEqual(JSON.parse(dashboards[0].Properties.DashboardBody).widgets.length, 2)
+})

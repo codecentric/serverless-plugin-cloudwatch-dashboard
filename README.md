@@ -40,21 +40,24 @@ dashboard configuration.
 This is the minimum required configuration:
 ```yaml
 dashboard:
-  enabled: true
+  lambda:
+    enabled: true
 ```
 
 The default configuration will look like this:
 ```yaml
 dashboard:
-  metrics: [Duration, Errors, Invocations, Throttles]
-  stats: [p99, p95, p90, p50]
-  enabled: true
+  lambda:
+      metrics: [Duration, Errors, Invocations, Throttles]
+      stats: [p99, p95, p90, p50]
+      enabled: true
 ```
 
 To gain maximum control over which functions to be included, you can disable the plugin globally,
 ```yaml
 dashboard:
-  enabled: false
+  lambda:
+    enabled: false
 ```
 and enable it only for specific functions, by setting the `dashboard` flag for those functions to `true`:
 ```yaml

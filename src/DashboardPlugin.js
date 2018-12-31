@@ -16,10 +16,8 @@ class DashboardPlugin {
    * @param {!Object} options - Serverless options
    * */
   constructor (serverless, options) {
-    this.serverless = serverless
+    this.logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
     this.service = serverless.service
-    this.region = this.service.provider.region
-    this.customConfig = this.service.custom || {}
 
     this.hooks = {
       'before:package:finalize': () => this.addDashboards()
@@ -27,10 +25,10 @@ class DashboardPlugin {
   }
 
   addDashboards () {
-    const allDashboards = [].concat(this.createLambdaDashboards()) // TODO add other dashboards here
+    const allDashboards = this.createAllDashboards()
 
     if (allDashboards.length > 0) {
-      const newResources =  allDashboards.reduce((acc, dashboard) => {
+      const newResources = allDashboards.reduce((acc, dashboard) => {
         acc[dashboard.Properties.DashboardName] = dashboard
         return acc
       }, {})
@@ -41,14 +39,17 @@ class DashboardPlugin {
     }
   }
 
-  createLambdaDashboards () {
-    const logger = msg => this.serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: Lambda: ' + msg)
+  createAllDashboards () {
+    return [].concat(this.createLambdaDashboards()) // TODO add dynamoDB dashboards here
+  }
 
-    const dashboardConfig = this.customConfig.dashboard || {}
+  createLambdaDashboards () {
+    const customConfig = this.service.custom || {}
+    const dashboardConfig = customConfig.dashboard || {}
     const lambdaConfig = dashboardConfig.lambda || {}
     const functions = this.service.functions || {}
 
-    const lambdaDashboardsFactory = new LambdaDashboards(logger, this.region, lambdaConfig, functions)
+    const lambdaDashboardsFactory = new LambdaDashboards(this.logger, this.service.provider.region, lambdaConfig, functions)
     return lambdaDashboardsFactory.createDashboards()
   }
 }

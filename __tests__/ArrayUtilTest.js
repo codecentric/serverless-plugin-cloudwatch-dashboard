@@ -1,6 +1,5 @@
 'use strict'
 
-const sinon = require('sinon')
 const test = require('ava')
 
 const ArrayUtil = require('../src/ArrayUtil')

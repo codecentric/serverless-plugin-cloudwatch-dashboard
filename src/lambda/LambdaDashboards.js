@@ -26,9 +26,6 @@ class LambdaDashboards {
   }
 
   doCreateDashboards(functionNames, config) {
-    this.logger(`Using lambda configuration: ${JSON.stringify(config)}`)
-    this.logger(`Adding dashboards for functions: ${JSON.stringify(functionNames)}`)
-
     const widgetFactory = new LambdaWidgets(this.region, config.metrics, config.stats, functionNames)
     const allWidgets = widgetFactory.create()
 

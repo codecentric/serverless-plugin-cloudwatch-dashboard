@@ -1,7 +1,6 @@
 'use strict'
 
 class ArrayUtil {
-
   static notEmpty (...arrays) {
     return arrays
       .map(array => typeof array !== 'undefined' && array.length > 0)
