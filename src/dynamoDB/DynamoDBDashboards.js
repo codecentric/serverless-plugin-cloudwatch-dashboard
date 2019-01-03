@@ -31,7 +31,7 @@ class DynamoDBDashboards {
     const widgets = widgetFactory.create()
     const dashboardFactory = new Dashboard("DynamoDBDashboard", widgets)
 
-    this.logger(`Summary: created 1 dashboard for ${tableNames.length} tables.`)
+    this.logger(`Summary: created 1 dashboard for ${tableNames.length} DynamoDB tables.`)
 
     return dashboardFactory.create()
   }

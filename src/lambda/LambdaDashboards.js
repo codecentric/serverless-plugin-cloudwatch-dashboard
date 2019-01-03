@@ -36,7 +36,7 @@ class LambdaDashboards {
       return dashboardFactory.create()
     })
 
-    this.logger(`Summary: created ${dashboards.length} dashboards for ${functionNames.length} functions.`)
+    this.logger(`Summary: created ${dashboards.length} dashboards for ${functionNames.length} Lambda functions.`)
     return dashboards
   }
 
