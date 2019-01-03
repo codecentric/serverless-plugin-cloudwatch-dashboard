@@ -9,10 +9,10 @@ class ArrayUtil {
       }, true)
   }
 
-  static flatMap(array, op) {
-    return array.reduce( (acc, next) => {
+  static flatMap (array, op) {
+    return array.reduce((acc, next) => {
       op(next).forEach(nextResult => acc.push(nextResult))
-      return acc;
+      return acc
     }, [])
   }
 }
