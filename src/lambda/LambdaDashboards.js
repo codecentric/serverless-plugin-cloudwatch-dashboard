@@ -30,7 +30,7 @@ class LambdaDashboards {
     const allWidgets = widgetFactory.create()
 
     const dashboards = Object.keys(allWidgets).map( metricName => {
-      const dashboardName = `Lambda-Dashboard-${metricName}`
+      const dashboardName = `LambdaDashboard${metricName}`
       const metricWidgets = allWidgets[metricName]
       const dashboardFactory = new Dashboard(dashboardName, metricWidgets)
       return dashboardFactory.create()
