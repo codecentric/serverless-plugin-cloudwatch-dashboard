@@ -1,30 +1,69 @@
 'use strict'
 
 const Widget = require('../cf/Widget')
+const ArrayUtil = require('../ArrayUtil')
 
 class DynamoDBWidgets {
 
   constructor (region, metrics, tableNames, globalSecondaryIndexNames) {
     this.region = region
-    this.metrics = metrics
+    this.tableMetrics = metrics
     this.tableNames = tableNames
     this.globalSecondaryIndexNames = globalSecondaryIndexNames
   }
 
   create () {
-    return this.metrics.map(metric => this.createWidget(metric))
+    const tableMetricWidgets = this.tableMetrics.map(metric => this.createTableMetricWidget(metric))
+    const returnedItemCountWidget = this.createReturnedItemCountWidget()
+    const successfulRequestLatencyWidget = this.createSuccessfulRequestLatencyWidget()
+
+    return []
+      .concat(tableMetricWidgets)
+      .concat(returnedItemCountWidget)
+      .concat(successfulRequestLatencyWidget)
   }
 
-  createWidget(metric) {
+  createTableMetricWidget(metric) {
     const widgetName = metric
-    const tableMetrics = this.tableNames.map(name => [ 'AWS/DynamoDB', metric, 'TableName', name ])
-    const indexMetrics = Object.keys(this.globalSecondaryIndexNames).reduce( (acc, tableName) => {
-      const indexNames = this.globalSecondaryIndexNames[tableName]
-      indexNames.forEach(indexName => acc.push([ 'AWS/DynamoDB', metric, 'TableName', tableName, 'GlobalSecondaryIndexName', indexName ]))
-      return acc
-    }, [])
+    const widgetTableMetrics = this.tableNames.map(name => [ 'AWS/DynamoDB', metric, 'TableName', name ])
 
-    const widgetFactory = new Widget(this.region, widgetName, [].concat(tableMetrics).concat(indexMetrics))
+    const widgetIndexMetrics = ArrayUtil.flatMap(Object.keys(this.globalSecondaryIndexNames), tableName =>
+      this.globalSecondaryIndexNames[tableName].map(indexName =>
+        [ 'AWS/DynamoDB', metric, 'TableName', tableName, 'GlobalSecondaryIndexName', indexName ]
+      )
+    )
+
+    const widgetFactory = new Widget(this.region, widgetName, [].concat(widgetTableMetrics).concat(widgetIndexMetrics))
+    return widgetFactory.create()
+  }
+
+  createReturnedItemCountWidget () {
+    const metric = 'ReturnedItemCount'
+    const operations = [ 'Query', 'Scan' ]
+    const widgetName = metric
+
+    const widgetMetrics = ArrayUtil.flatMap(this.tableNames, tableName =>
+      operations.map(operation =>
+        [ 'AWS/DynamoDB', metric, 'TableName', tableName, 'Operation', operation, { 'stat': 'Average' } ]
+      )
+    )
+
+    const widgetFactory = new Widget(this.region, widgetName, widgetMetrics)
+    return widgetFactory.create()
+  }
+
+  createSuccessfulRequestLatencyWidget () {
+    const metric = 'SuccessfulRequestLatency'
+    const operations = [ 'Query', 'Scan', 'GetItem', 'PutItem', 'UpdateItem', 'BatchWriteItem' ]
+    const widgetName = metric
+
+    const widgetMetrics = ArrayUtil.flatMap(this.tableNames, tableName =>
+      operations.map(operation =>
+        [ 'AWS/DynamoDB', metric, 'TableName', tableName, 'Operation', operation ]
+      )
+    )
+
+    const widgetFactory = new Widget(this.region, widgetName, widgetMetrics)
     return widgetFactory.create()
   }
 }

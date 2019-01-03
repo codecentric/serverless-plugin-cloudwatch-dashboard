@@ -37,6 +37,10 @@ test('test create dynamoDB widgets', t => {
   const dynamoDBWidgetsFactory = new DynamoDBWidgets('eu-central-1', metrics, tableNames, indexNames)
   const widgets = dynamoDBWidgetsFactory.create()
 
-  t.is(widgets.length, 2) // one widget per metric
+  // expected:
+  // - one widget per table metric
+  // - one widget for ReturnedItemCount
+  // - one widget for SuccessfulRequestLatencyWidget
+  t.is(widgets.length, 4)
   t.deepEqual(widgets[0], provisionedReadCapacityUnitsWidget)
 })

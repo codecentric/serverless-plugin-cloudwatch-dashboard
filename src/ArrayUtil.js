@@ -8,6 +8,13 @@ class ArrayUtil {
         return acc && next
       }, true)
   }
+
+  static flatMap(array, op) {
+    return array.reduce( (acc, next) => {
+      op(next).forEach(nextResult => acc.push(nextResult))
+      return acc;
+    }, [])
+  }
 }
 
 module.exports = ArrayUtil

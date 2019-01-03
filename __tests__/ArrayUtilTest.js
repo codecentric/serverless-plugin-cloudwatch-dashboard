@@ -12,3 +12,8 @@ test('notEmpty', t => {
   t.is(ArrayUtil.notEmpty(['a'], ['b', 'c']), true)
   t.is(ArrayUtil.notEmpty(['a'], [], ['b', 'c']), false)
 })
+
+test('flatMap', t => {
+  t.deepEqual(ArrayUtil.flatMap([1, 2, 3], entry => [entry]), [1, 2, 3])
+  t.deepEqual(ArrayUtil.flatMap([1, 2, 3], entry => [5 * entry, 10 * entry]), [5, 10, 10, 20, 15, 30])
+})
