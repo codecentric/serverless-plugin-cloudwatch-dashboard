@@ -49,7 +49,7 @@ test('creates new resources for dashboards, when missing', t => {
   })
 })
 
-test('add dashboards to existing resources', t => {
+test('add dashboards to existing resources when not missing', t => {
   const serverless = {
     service: {
       provider: {
@@ -73,6 +73,21 @@ test('add dashboards to existing resources', t => {
       'test-dashboard': dummyDashboard
     }
   })
+})
+
+test('create all dashboards creates lambda and dynamoDB dashboards', t => {
+  const serverless = {
+    service: {
+      provider: {
+        region: 'eu-central-1'
+      }
+    }
+  }
+
+  const dashboardPlugin = new DashboardPlugin(serverless, {})
+  sinon.stub(dashboardPlugin, 'createLambdaDashboards').returns(['lambda-dashboard-1', 'lambda-dashboard-2'])
+  sinon.stub(dashboardPlugin, 'createDynamoDBDashboards').returns(['dynamoDB-dashboard-1', 'dynamoDB-dashboard-2'])
+  t.deepEqual(dashboardPlugin.createAllDashboards(), ['dynamoDB-dashboard-1', 'dynamoDB-dashboard-2', 'lambda-dashboard-1', 'lambda-dashboard-2'])
 })
 
 test('create lambda dashboards', t => {

@@ -1,6 +1,7 @@
 'use strict'
 
 const LambdaDashboards = require('./lambda/LambdaDashboards')
+const DynamoDBDashboards = require('./dynamoDB/DynamoDBDashboards')
 
 /**
  * @module serverless-plugin-cloudwatch-dashboard
@@ -18,6 +19,7 @@ class DashboardPlugin {
   constructor (serverless, options) {
     this.logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
     this.service = serverless.service
+    this.region = this.service.provider.region
 
     this.hooks = {
       'before:package:finalize': () => this.addDashboards()
@@ -40,17 +42,35 @@ class DashboardPlugin {
   }
 
   createAllDashboards () {
-    return [].concat(this.createLambdaDashboards()) // TODO add dynamoDB dashboards here
+    return []
+      .concat(this.createDynamoDBDashboards())
+      .concat(this.createLambdaDashboards())
+  }
+
+  createDynamoDBDashboards () {
+    const dashboardConfig = this.getDashboardConfig()
+    const dynamoDBConfig = dashboardConfig.dynamoDB || {}
+
+    const serverlessResources = this.service.resources || {}
+    const cfResources = serverlessResources.Resources || {}
+
+    const dynamoDBDashboardsFactory = new DynamoDBDashboards(this.logger, this.region, dynamoDBConfig, cfResources)
+    return dynamoDBDashboardsFactory.createDashboards()
   }
 
   createLambdaDashboards () {
-    const customConfig = this.service.custom || {}
-    const dashboardConfig = customConfig.dashboard || {}
+    const dashboardConfig = this.getDashboardConfig()
     const lambdaConfig = dashboardConfig.lambda || {}
+
     const functions = this.service.functions || {}
 
-    const lambdaDashboardsFactory = new LambdaDashboards(this.logger, this.service.provider.region, lambdaConfig, functions)
+    const lambdaDashboardsFactory = new LambdaDashboards(this.logger, this.region, lambdaConfig, functions)
     return lambdaDashboardsFactory.createDashboards()
+  }
+
+  getDashboardConfig () {
+    const customConfig = this.service.custom || {}
+    return customConfig.dashboard || {}
   }
 }
 

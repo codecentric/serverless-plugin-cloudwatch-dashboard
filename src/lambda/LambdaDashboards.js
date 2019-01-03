@@ -47,7 +47,7 @@ class LambdaDashboards {
       enabled: false
     }
 
-    Object.assign(result, this.customConfig) // overwrite result entries with customConfig
+    Object.assign(result, this.customConfig)
     return result
   }
 

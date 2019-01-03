@@ -30,12 +30,17 @@ plugins:
 ### Configuration
 
 The plugin can be configured by adding a property called `dashboard` to the custom properties of the Serverless
-service. The configuration can specify the lambda `metrics` together with the `stats` of the metrics to 
+service. Following dashboards are currently supported:
+- [Lambda Dashboards](#lambda-dashboards)
+- [DynamoDB Dashboards](#dynamoDB-dashboards)
+
+#### Lambda Dashboards
+
+The configuration can specify the lambda `metrics` together with the `stats` of the metrics to 
 be added. The plugin will then generate one dashboard for each metric, with each dashboard containing the 
 specified statistics for each lambda function.
 
-The plugin can be globally activated/deactivated by adding an `enabled` flag to the 
-dashboard configuration.
+Lambda dashboards can be globally activated/deactivated for all functions by adding an `enabled` flag to the configuration.
 
 This is the minimum required configuration:
 ```yaml
@@ -44,16 +49,16 @@ dashboard:
     enabled: true
 ```
 
-The default configuration will look like this:
+The default configuration looks like this:
 ```yaml
 dashboard:
   lambda:
-      metrics: [Duration, Errors, Invocations, Throttles]
-      stats: [p99, p95, p90, p50]
-      enabled: true
+    metrics: [ Duration, Errors, Invocations, Throttles ]
+    stats: [p99, p95, p90, p50]
+    enabled: true
 ```
 
-To gain maximum control over which functions to be included, you can disable the plugin globally,
+To gain maximum control over which functions to be included, you can disable lambda dashboards globally,
 ```yaml
 dashboard:
   lambda:
@@ -65,6 +70,32 @@ functions:
     myFunction:
       handler: some_handler
       dashboard: true
+```
+#### DynamoDB Dashboards
+
+The configuration can specify the `metrics` for DynamoDB Tables and GlobalSecondaryIndexes to be added. The plugin will 
+then generate a new dashboard containing one widget for each metric.
+
+DynamoDB dashboards can be globally activated/deactivated for all tables by adding an `enabled` flag to the 
+configuration.
+
+This is the minimum required configuration:
+```yaml
+dashboard:
+  dynamoDB:
+    enabled: true
+```
+
+The default configuration looks like this:
+```yaml
+dashboard:
+  dynamoDB:
+    enabled: true
+    metrics:
+      - ProvisionedReadCapacityUnits
+      - ConsumedReadCapacityUnits
+      - ProvisionedWriteCapacityUnits
+      - ConsumedWriteCapacityUnits
 ```
 
 ## Contribute
