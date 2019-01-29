@@ -31,7 +31,9 @@ class DashboardPlugin {
 
     if (allDashboards.length > 0) {
       const newResources = allDashboards.reduce((acc, dashboard) => {
-        acc[dashboard.Properties.DashboardName] = dashboard
+        const resourceName = dashboard.Properties.DashboardName
+        dashboard.Properties.DashboardName = this.service.service + "-" + resourceName;
+        acc[resourceName] = dashboard
         return acc
       }, {})
 
