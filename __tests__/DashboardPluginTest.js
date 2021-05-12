@@ -49,7 +49,7 @@ test('creates new resources for dashboards, when missing', t => {
   })
 })
 
-test('add dashboards to existing resources when not missing', t => {
+test('add dashboards to existing resources when not missing and add service name and stage to dashboard name', t => {
   const serverless = {
     service: {
       provider: {
@@ -59,18 +59,30 @@ test('add dashboards to existing resources when not missing', t => {
             otherResource: 'dont touch me'
           }
         }
-      }
+      },
+      service: 'service-name'
     }
   }
 
-  const dashboardPlugin = new DashboardPlugin(serverless, {})
-  sinon.stub(dashboardPlugin, 'createLambdaDashboards').returns([dummyDashboard])
+  const dashboardPlugin = new DashboardPlugin(serverless, {stage: 'test'})
+  const lambdaDashboard = {
+    Properties: {
+      DashboardName: 'test-lambda-dashboard'
+    }
+  }
+  sinon.stub(dashboardPlugin, 'createLambdaDashboards').returns([lambdaDashboard])
+
+  t.deepEqual(dashboardPlugin.service, serverless.service)
   dashboardPlugin.addDashboards()
 
   t.deepEqual(serverless.service.provider.compiledCloudFormationTemplate, {
     Resources: {
       otherResource: 'dont touch me',
-      'test-dashboard': dummyDashboard
+      'test-lambda-dashboard': {
+        Properties: {
+          DashboardName: 'service-name-test-lambda-dashboard-test'
+        } 
+      }
     }
   })
 })

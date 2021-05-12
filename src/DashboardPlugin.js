@@ -20,6 +20,7 @@ class DashboardPlugin {
     this.logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
     this.service = serverless.service
     this.region = this.service.provider.region
+    this.stage = options.stage
 
     this.hooks = {
       'before:package:finalize': () => this.addDashboards()
@@ -32,7 +33,7 @@ class DashboardPlugin {
     if (allDashboards.length > 0) {
       const newResources = allDashboards.reduce((acc, dashboard) => {
         const resourceName = dashboard.Properties.DashboardName
-        dashboard.Properties.DashboardName = this.service.service + "-" + resourceName;
+        dashboard.Properties.DashboardName = this.service.service + "-" + resourceName + '-' + this.stage;
         acc[resourceName] = dashboard
         return acc
       }, {})
