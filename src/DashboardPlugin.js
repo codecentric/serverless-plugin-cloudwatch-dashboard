@@ -67,7 +67,7 @@ class DashboardPlugin {
 
     const functions = this.service.functions || {}
 
-    const lambdaDashboardsFactory = new LambdaDashboards(this.logger, this.region, lambdaConfig, functions)
+    const lambdaDashboardsFactory = new LambdaDashboards(this.logger, this.region, lambdaConfig, functions, this.stage)
     return lambdaDashboardsFactory.createDashboards()
   }
 
