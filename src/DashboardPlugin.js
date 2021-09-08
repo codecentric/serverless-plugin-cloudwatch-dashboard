@@ -20,6 +20,7 @@ class DashboardPlugin {
     this.logger = msg => serverless.cli.log('[serverless-plugin-cloudwatch-dashboard]: ' + msg)
     this.service = serverless.service
     this.region = this.service.provider.region
+    this.stage = serverless.getProvider('aws').getStage()
 
     this.hooks = {
       'before:package:finalize': () => this.addDashboards()
