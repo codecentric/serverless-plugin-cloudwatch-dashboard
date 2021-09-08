@@ -6,11 +6,12 @@ const ArrayUtil = require('../ArrayUtil')
 
 class LambdaDashboards {
 
-  constructor (logger, region, customConfig, functions) {
+  constructor (logger, region, customConfig, functions, stage) {
     this.logger = logger
     this.region = region
     this.customConfig = customConfig
     this.functions = functions
+    this.stage = stage
   }
 
   createDashboards () {
@@ -30,7 +31,7 @@ class LambdaDashboards {
     const allWidgets = widgetFactory.create()
 
     const dashboards = Object.keys(allWidgets).map( metricName => {
-      const dashboardName = `LambdaDashboard${metricName}`
+      const dashboardName = `LambdaDashboard${metricName}-${this.stage}`
       const metricWidgets = allWidgets[metricName]
       const dashboardFactory = new Dashboard(dashboardName, metricWidgets)
       return dashboardFactory.create()
