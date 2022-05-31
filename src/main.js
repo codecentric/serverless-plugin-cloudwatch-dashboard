@@ -27,7 +27,7 @@ module.exports = class Plugin {
   }
 
   addDashboards() {
-    const dailyDashboardResource = createDailyDashboard(this.service);
+    const dailyDashboardResource = createDailyDashboard(this.service, this.stage);
 
     const template = this.service.provider.compiledCloudFormationTemplate
     template.Resources = Object.assign(dailyDashboardResource, template.Resources)
