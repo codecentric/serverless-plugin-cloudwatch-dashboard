@@ -39,7 +39,7 @@ function getRequestAndErrorsWidgetMetrics(stage, restApiName, functionsApiGatewa
     if (i === 0) {
       requestsAndErrorsMetrics.push(`[\".\",\"5XXError\",\".\",\".\",\".\",\"/${functionsApiGatewayRoutes[i].path}\",\".\",\".\",\".\",\"${functionsApiGatewayRoutes[i].method}\",{ "yAxis": "right" }]`);
     } else {
-      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method}\"],{ "yAxis": "right" }`);
+      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method}\",{ "yAxis": "right" }]`);
     }
   }
 
