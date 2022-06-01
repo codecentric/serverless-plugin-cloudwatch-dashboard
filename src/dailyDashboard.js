@@ -29,17 +29,17 @@ function getRequestAndErrorsWidgetMetrics(stage, restApiName, functionsApiGatewa
 
   for (var i = 0; i < functionsApiGatewayRoutes.length; i++) {
     if (i === 0) {
-      requestsAndErrorsMetrics.push(`[\"AWS/ApiGateway\",\"Count\",\"ApiName\",\"${restApiName}\",\"Resource\",\"/${functionsApiGatewayRoutes[i].path}\",\"Stage\",\"${stage}\",\"Method\",\"${functionsApiGatewayRoutes[i].method}\"]`);
+      requestsAndErrorsMetrics.push(`[\"AWS/ApiGateway\",\"Count\",\"ApiName\",\"${restApiName}\",\"Resource\",\"/${functionsApiGatewayRoutes[i].path}\",\"Stage\",\"${stage}\",\"Method\",\"${functionsApiGatewayRoutes[i].method.toUpperCase()}\"]`);
     } else {
-      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method}\"]`);
+      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method.toUpperCase()}\"]`);
     }
   }
 
   for (var i = 0; i < functionsApiGatewayRoutes.length; i++) {
     if (i === 0) {
-      requestsAndErrorsMetrics.push(`[\".\",\"5XXError\",\".\",\".\",\".\",\"/${functionsApiGatewayRoutes[i].path}\",\".\",\".\",\".\",\"${functionsApiGatewayRoutes[i].method}\",{ "yAxis": "right" }]`);
+      requestsAndErrorsMetrics.push(`[\".\",\"5XXError\",\".\",\".\",\".\",\"/${functionsApiGatewayRoutes[i].path}\",\".\",\".\",\".\",\"${functionsApiGatewayRoutes[i].method.toUpperCase()}\",{ "yAxis": "right" }]`);
     } else {
-      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method}\",{ "yAxis": "right" }]`);
+      requestsAndErrorsMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method.toUpperCase()}\",{ "yAxis": "right" }]`);
     }
   }
 
@@ -51,9 +51,9 @@ function getResponseTimesWidgetMetrics(stage, restApiName, functionsApiGatewayRo
 
   for (var i = 0; i < functionsApiGatewayRoutes.length; i++) {
     if (i === 0) {
-      responseTimesMetrics.push(`[\"AWS/ApiGateway\",\"Latency\",\"ApiName\",\"${restApiName}\",\"Resource\",\"/${functionsApiGatewayRoutes[i].path}\",\"Stage\",\"${stage}\",\"Method\",\"${functionsApiGatewayRoutes[i].method}\"]`);
+      responseTimesMetrics.push(`[\"AWS/ApiGateway\",\"Latency\",\"ApiName\",\"${restApiName}\",\"Resource\",\"/${functionsApiGatewayRoutes[i].path}\",\"Stage\",\"${stage}\",\"Method\",\"${functionsApiGatewayRoutes[i].method.toUpperCase()}\"]`);
     } else {
-      responseTimesMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method}\"]`);
+      responseTimesMetrics.push(`[\"...\",\"/${functionsApiGatewayRoutes[i].path}\", \".\", \".\", \".\", \"${functionsApiGatewayRoutes[i].method.toUpperCase()}\"]`);
     }
   }
 
